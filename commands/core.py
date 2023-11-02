@@ -37,6 +37,7 @@ class AssistantBot:
             "show-address": self.show_address,
             "add-email": self.add_email,
             "show-email": self.show_email,
+            "delete": self.delete_contact,
         }.get(cmd)
 
         if command_function:
@@ -223,3 +224,11 @@ class AssistantBot:
         if record and record.email:
             return record.email.value
         return f"No email data found for name: {name}."
+
+    @input_error
+    def delete_contact(self, name: str) -> str:
+        if name in self.book.data:
+            del self.book.data[name]
+            return f"Contact '{name}' deleted."
+        else:
+            return f"No contact found for name: {name}"
