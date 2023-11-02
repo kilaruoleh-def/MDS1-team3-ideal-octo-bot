@@ -35,7 +35,20 @@ class Phone(Field):
 class Birthday(Field):
     def __init__(self, value):
         # Date format: DD.MM.YYYY
-        pattern = r'\d{2}\.\d{2}\.\d{4}'
+        pattern = r"\d{2}\.\d{2}\.\d{4}"
         if not re.fullmatch(pattern, value):
             raise ValueError("Invalid birthday format!")
+        super().__init__(value)
+
+
+class Address(Field):
+    def __init__(self, value):
+        super().__init__(value)
+
+
+class Email(Field):
+    def __init__(self, value):
+        email_pattern = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
+        if not re.match(email_pattern, value):
+            raise ValueError("Invalid email format!")
         super().__init__(value)
