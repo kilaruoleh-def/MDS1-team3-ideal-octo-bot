@@ -1,6 +1,7 @@
 import re
 from typing import Optional
 
+from commands.note_commands import NoteBot
 from errors.error_decorator import input_error
 from models.adress_book import AddressBook
 from models.field import Birthday
@@ -12,6 +13,7 @@ class AssistantBot:
     def __init__(self) -> None:
         """Initialize the bot with an empty contacts dictionary."""
         self.book = AddressBook(Storage.load_from_file())
+        self.notes = NoteBot()
 
     def execute_command(self, command: str) -> str:
         """Execute a given command and return the bot's response."""
@@ -32,13 +34,15 @@ class AssistantBot:
             "all": self.show_all,
             "add-birthday": self.add_birthday,
             "show-birthday": self.show_birthday,
-            "birthdays": self.birthdays
+            "birthdays": self.birthdays,
+            "note-manager": self.notes.execute_command
         }.get(cmd)
 
         if command_function:
             return command_function(args)
 
         if cmd in ["close", "exit"]:
+            Storage.save_to_file_note(self.notes.notes)
             Storage.save_to_file(self.book.data)
             raise SystemExit("Good bye!")
 
