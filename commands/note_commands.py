@@ -6,7 +6,7 @@ from models.note import Note
 from storage.storage import Storage
 
 
-class NoteBot:
+class Notebook:
     def __init__(self) -> None:
         self.notes = Storage.load_from_file_note()
 
@@ -82,16 +82,6 @@ class NoteBot:
         if not self.notes:
             return "There are no notes"
         return '\n'.join([note.name for name, note in self.notes.items()])
-
-    @input_error
-    def add_tag(self, args: Optional[str]) -> str:
-        if not args or len(args.split()) != 2:
-            return "Please enter the note title and tag"
-        name, tag = map(str.strip, args.split())
-        if name not in self.notes:
-            return "Invalid title"
-        self.notes[name].add_tag(tag)
-        return "Teg added."
 
     @input_error
     def add_tag(self, args: Optional[str]) -> str:

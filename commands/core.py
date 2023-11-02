@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-from commands.note_commands import NoteBot
+from commands.note_commands import Notebook
 from errors.error_decorator import input_error
 from models.adress_book import AddressBook
 from models.field import Birthday
@@ -13,7 +13,7 @@ class AssistantBot:
     def __init__(self) -> None:
         """Initialize the bot with an empty contacts dictionary."""
         self.book = AddressBook(Storage.load_from_file())
-        self.notes = NoteBot()
+        self.notes = Notebook()
 
     def execute_command(self, command: str) -> str:
         """Execute a given command and return the bot's response."""
