@@ -3,7 +3,7 @@ from typing import Optional
 
 from errors.error_decorator import input_error
 from models.adress_book import AddressBook
-from models.field import Birthday, Address, Email
+from models.field import Birthday, Address, Email, Phone
 from models.record import Record
 from storage.storage import Storage
 
@@ -54,22 +54,78 @@ class AssistantBot:
 
     @input_error
     def add_contact(self, args: Optional[str]) -> str:
-        """Add a contact to the book's data dictionary."""
-        if not args or len(args.split()) != 2:
-            raise ValueError
-        name, phone = map(str.strip, args.split(None, 1))
+        if not args:
+            return "Invalid format for adding contact. Use 'add [name] [phone] [email] [address] [birthday]'."
+
+        args = re.split(r"\s+", args)
+
+        if len(args) < 2:
+            return "Invalid format for adding contact. You must provide at least a name and a phone number."
+
+        name = args[0]
+        phone = args[1]
+        email = args[2] if len(args) > 2 else None
+        address = args[3] if len(args) > 3 else None
+        birthday = args[4] if len(args) > 4 else None
+
+        try:
+            if phone:
+                Phone(phone)
+            if email:
+                Email(email)
+            if birthday:
+                Birthday(birthday)
+        except ValueError as e:
+            return str(e)
+
         self.book.data[name] = Record(name, phone)
+        if email:
+            self.book.data[name].add_email(email)
+        if address:
+            self.book.data[name].add_address(Address(address))
+        if birthday:
+            self.book.data[name].add_birthday(birthday)
+
         return "Contact added."
 
     @input_error
     def change_contact(self, args: Optional[str]) -> str:
-        """Change the phone number of an existing contact."""
-        if not args or len(args.split()) != 2:
-            raise ValueError
-        name, new_phone = map(str.strip, args.split())
-        if name not in self.book.data:
-            raise KeyError
-        self.book.data[name].change_phone(new_phone)
+        if not args:
+            return "Invalid format for changing contact. Use 'change [name] [phone] [email] [address] [birthday]'."
+
+        args = re.split(r"\s+", args)
+
+        if len(args) < 2:
+            return "Invalid format for changing contact. You must provide at least a name and a phone number."
+
+        name = args[0]
+        new_phone = args[1]
+        new_email = args[2] if len(args) > 2 else None
+        new_address = args[3] if len(args) > 3 else None
+        new_birthday = args[4] if len(args) > 4 else None
+
+        try:
+            if name not in self.book.data:
+                return f"No contact found for name: {name}"
+
+            if new_email:
+                Email(new_email)
+            if new_phone:
+                Phone(new_phone)
+            if new_birthday:
+                Birthday(new_birthday)
+        except ValueError as e:
+            return str(e)
+
+        contact = self.book.data[name]
+        contact.change_phone(new_phone)
+        if new_email:
+            contact.add_email(new_email)
+        if new_address:
+            contact.add_address(Address(new_address))
+        if new_birthday:
+            contact.add_birthday(new_birthday)
+
         return "Contact updated."
 
     @input_error
@@ -102,7 +158,7 @@ class AssistantBot:
         name, birthday = args.split(None, 1)
         record = self.book.find(name)
         if record:
-            record.add_birthday(Birthday(birthday))
+            record.add_birthday(birthday)
             return f"Birthday added for {name}."
         return f"No contact found for name: {name}."
 
