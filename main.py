@@ -1,4 +1,5 @@
-from bot_interfaces.cli_interface import bot_cli
+from bot.bot import AssistantBot
 
-if __name__ == "__main__":
-    bot_cli()
+if __name__ == '__main__':
+    bot = AssistantBot()
+    bot.run()
