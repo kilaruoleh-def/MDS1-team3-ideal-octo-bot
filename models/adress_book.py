@@ -21,7 +21,15 @@ class AddressBook(UserDict):
             del self.data[name]
 
     def get_birthdays_per_week(self):
-        days_mapping = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+        days_mapping = [
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+            "Sunday",
+        ]
         today = datetime.today().date()
         end_of_week = today + timedelta(days=6)
 
@@ -33,10 +41,14 @@ class AddressBook(UserDict):
                 if not birthday_str:
                     continue
 
-                birthday = datetime.strptime(birthday_str, '%d.%m.%Y').date()
+                birthday = datetime.strptime(birthday_str, "%d.%m.%Y").date()
                 birthday_this_year = birthday.replace(year=today.year)
 
-                if birthday.month == 2 and birthday.day == 29 and not calendar.isleap(today.year):
+                if (
+                    birthday.month == 2
+                    and birthday.day == 29
+                    and not calendar.isleap(today.year)
+                ):
                     birthday_this_year = birthday_this_year.replace(day=28)
 
                 if birthday_this_year < today:
