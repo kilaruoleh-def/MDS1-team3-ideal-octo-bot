@@ -22,7 +22,7 @@ Assistant Bot is a command-line interface (CLI) application designed to assist u
 ## Installation
 1. Clone the repository:
     ```shell
-    git clone https://github.com/kilaruoleh-def/ideal-octo-bot.git
+    git clone https://github.com/kilaruoleh-def/MDS1-team3-ideal-octo-bot.git
     ```
 2. Navigate to the project directory:
     ```shell
